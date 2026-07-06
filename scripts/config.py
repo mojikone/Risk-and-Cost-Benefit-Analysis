@@ -74,7 +74,7 @@ DAMAGE_CURVES = {  # OMR per m2 at each depth in DAMAGE_DEPTHS
 DISCOUNT_RATE = 0.025      # r
 HORIZON_YEARS = 50         # n
 
-COST_DAM_OMR     = 50_000_000
+COST_DAM_OMR     = 75_000_000
 COST_CHANNEL_OMR = 5_000_000
 
 MAINT_DAM_RATE     = 0.01   ; MAINT_DAM_START     = 5   # 1% of dam capital, from year 5

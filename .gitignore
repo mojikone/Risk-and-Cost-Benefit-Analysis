@@ -16,3 +16,8 @@ Data/Population/*.tif
 __pycache__/
 *.pyc
 output/avoided/
+
+# Node / report build
+node_modules/
+package-lock.json
+package.json

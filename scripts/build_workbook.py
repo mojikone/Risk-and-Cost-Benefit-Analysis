@@ -40,7 +40,7 @@ def main():
     # ---------------- Inputs ----------------
     ip = wb.active; ip.title = "Inputs"
     ip["A1"] = "MAJLAS FLOOD PROTECTION — COST-BENEFIT INPUTS"; ip["A1"].font = Font(bold=True, size=13)
-    rows = [("Dam capital cost", 50_000_000, "OMR"),
+    rows = [("Dam capital cost", 75_000_000, "OMR"),
             ("Channel capital cost", 5_000_000, "OMR"),
             ("Relocation cost", 168_080, "OMR"),
             ("Discount rate (r)", 0.025, "fraction"),
