@@ -54,10 +54,6 @@ def fig_exposure():
         ax.plot(rps, s, "-o", color="#c0562b", lw=2, label="Scheme")
         ax.fill_between(rps, s, b, color="#f0a54a", alpha=.5,
                         label=f"Avoided  (EAPE {av:,.0f}/yr)")
-        # annotate avoided count at 100yr
-        i = rps.index(100)
-        ax.annotate(f"−{b[i]-s[i]:,.0f}", (100, (b[i]+s[i])/2), fontsize=9,
-                    ha="center", color="#8a4b1f", fontweight="bold")
         ax.set_xscale("log"); ax.set_title(ttl); ax.set_xlabel("Return period (yr)")
         ax.set_ylabel("People"); ax.grid(alpha=.3, which="both"); ax.legend(loc="upper left")
         ax.set_xticks(rps); ax.set_xticklabels(rps, rotation=45, fontsize=7)
