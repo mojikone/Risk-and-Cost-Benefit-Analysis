@@ -1,0 +1,18 @@
+# Large rasters — regenerable from HEC-RAS RAS Mapper exports (not version-controlled)
+Data/Depth/
+output/damage/
+output/aux/
+Data/Population/*.tif
+
+# Archives / scratch
+*.rar
+*.zip
+~$*
+~WRL*.tmp
+*.tmp
+*.qgz~
+
+# Python
+__pycache__/
+*.pyc
+output/avoided/

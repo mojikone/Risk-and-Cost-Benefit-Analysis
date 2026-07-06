@@ -1,0 +1,16 @@
+metric,value
+Expected annual people exposed - baseline,1659
+Expected annual people exposed - scheme,850
+Annual people-exposure avoided,809
+
+RP,people baseline,people scheme,people protected
+2,1796,1085,711
+5,3147,1629,1518
+10,4527,2155,2372
+25,5356,2438,2918
+50,5862,2699,3163
+100,6207,2978,3229
+200,6432,3253,3179
+500,6617,3831,2786
+1000,6724,4305,2419
+10000,7012,6489,523
