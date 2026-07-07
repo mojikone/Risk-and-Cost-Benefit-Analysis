@@ -4,11 +4,11 @@ AED scheme,397828
 Annual avoided damage,373939
 Relocation cost,168080
 Initial cost (dam+channel+relocation),80168080
-"PV benefits (avoided, 50yr @2.5%)",10605780
-PV maintenance,19408788
-PV costs,99576867
-NPV,-88971087
-BCR,0.107
+"PV benefits (avoided, 50yr @2.5%)",7765253
+PV maintenance,13558148
+PV costs,93726228
+NPV,-85960975
+BCR,0.083
 
 Relocation by class,area_in_m2,unit_OMR/m2,cost_OMR
 (roads/blank),5868,0.0,0

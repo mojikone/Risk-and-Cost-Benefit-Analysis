@@ -43,7 +43,7 @@ def main():
     rows = [("Dam capital cost", 75_000_000, "OMR"),
             ("Channel capital cost", 5_000_000, "OMR"),
             ("Relocation cost", 168_080, "OMR"),
-            ("Discount rate (r)", 0.025, "fraction"),
+            ("Discount rate (r)", 0.042, "fraction"),
             ("Horizon (n)", 50, "years"),
             ("Dam maintenance rate", 0.01, "of dam capital / yr"),
             ("Dam maintenance start", 5, "year"),

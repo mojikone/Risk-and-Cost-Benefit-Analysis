@@ -1,0 +1,115 @@
+rp,condition,hclass,desc,area_ha,plots,people
+2,scheme,1,H1 generally safe,116.91,315,780
+2,scheme,2,H2 unsafe small vehicles,21.64,60,115
+2,scheme,3,H3 unsafe vehicles/children/elderly,28.46,52,130
+2,scheme,4,H4 unsafe for people,14.06,25,43
+2,scheme,5,H5 unsafe; buildings damaged,10.95,26,18
+2,scheme,6,H6 unsafe; buildings fail,2.72,0,1
+5,baseline,1,H1 generally safe,138.82,267,1239
+5,baseline,2,H2 unsafe small vehicles,60.92,88,517
+5,baseline,3,H3 unsafe vehicles/children/elderly,96.38,169,795
+5,baseline,4,H4 unsafe for people,57.72,82,348
+5,baseline,5,H5 unsafe; buildings damaged,102.57,50,247
+5,baseline,6,H6 unsafe; buildings fail,12.61,0,10
+5,scheme,1,H1 generally safe,157.11,366,1108
+5,scheme,2,H2 unsafe small vehicles,35.63,81,200
+5,scheme,3,H3 unsafe vehicles/children/elderly,37.84,75,214
+5,scheme,4,H4 unsafe for people,23.13,28,67
+5,scheme,5,H5 unsafe; buildings damaged,25.15,31,41
+5,scheme,6,H6 unsafe; buildings fail,4.54,0,1
+10,baseline,1,H1 generally safe,114.06,275,1256
+10,baseline,2,H2 unsafe small vehicles,63.72,85,634
+10,baseline,3,H3 unsafe vehicles/children/elderly,80.49,152,816
+10,baseline,4,H4 unsafe for people,112.71,122,912
+10,baseline,5,H5 unsafe; buildings damaged,185.04,164,810
+10,baseline,6,H6 unsafe; buildings fail,49.41,13,110
+10,scheme,1,H1 generally safe,178.04,364,1313
+10,scheme,2,H2 unsafe small vehicles,53.74,113,321
+10,scheme,3,H3 unsafe vehicles/children/elderly,55.88,100,314
+10,scheme,4,H4 unsafe for people,30.81,33,131
+10,scheme,5,H5 unsafe; buildings damaged,41.28,33,80
+10,scheme,6,H6 unsafe; buildings fail,9.5,4,2
+25,baseline,1,H1 generally safe,90.43,206,1087
+25,baseline,2,H2 unsafe small vehicles,59.94,117,698
+25,baseline,3,H3 unsafe vehicles/children/elderly,69.27,151,778
+25,baseline,4,H4 unsafe for people,95.2,113,914
+25,baseline,5,H5 unsafe; buildings damaged,273.45,289,1728
+25,baseline,6,H6 unsafe; buildings fail,87.26,17,163
+25,scheme,1,H1 generally safe,182.35,358,1440
+25,scheme,2,H2 unsafe small vehicles,59.06,132,355
+25,scheme,3,H3 unsafe vehicles/children/elderly,62.69,121,346
+25,scheme,4,H4 unsafe for people,35.17,40,164
+25,scheme,5,H5 unsafe; buildings damaged,53.15,35,137
+25,scheme,6,H6 unsafe; buildings fail,12.95,4,2
+50,baseline,1,H1 generally safe,66.97,164,894
+50,baseline,2,H2 unsafe small vehicles,48.59,94,633
+50,baseline,3,H3 unsafe vehicles/children/elderly,59.14,152,766
+50,baseline,4,H4 unsafe for people,83.22,116,843
+50,baseline,5,H5 unsafe; buildings damaged,331.8,381,2508
+50,baseline,6,H6 unsafe; buildings fail,120.37,22,230
+50,scheme,1,H1 generally safe,180.98,349,1547
+50,scheme,2,H2 unsafe small vehicles,64.51,141,393
+50,scheme,3,H3 unsafe vehicles/children/elderly,67.85,137,384
+50,scheme,4,H4 unsafe for people,41.94,41,177
+50,scheme,5,H5 unsafe; buildings damaged,62.82,40,198
+50,scheme,6,H6 unsafe; buildings fail,16.21,7,3
+100,baseline,1,H1 generally safe,53.12,142,665
+100,baseline,2,H2 unsafe small vehicles,34.82,73,504
+100,baseline,3,H3 unsafe vehicles/children/elderly,38.34,96,551
+100,baseline,4,H4 unsafe for people,74.22,138,936
+100,baseline,5,H5 unsafe; buildings damaged,374.06,457,3207
+100,baseline,6,H6 unsafe; buildings fail,160.22,49,355
+100,scheme,1,H1 generally safe,174.56,345,1626
+100,scheme,2,H2 unsafe small vehicles,74.31,141,476
+100,scheme,3,H3 unsafe vehicles/children/elderly,74.88,152,453
+100,scheme,4,H4 unsafe for people,43.16,47,159
+100,scheme,5,H5 unsafe; buildings damaged,77.08,45,270
+100,scheme,6,H6 unsafe; buildings fail,19.37,7,4
+200,baseline,1,H1 generally safe,40.34,120,462
+200,baseline,2,H2 unsafe small vehicles,26.71,57,367
+200,baseline,3,H3 unsafe vehicles/children/elderly,27.17,83,393
+200,baseline,4,H4 unsafe for people,51.47,92,697
+200,baseline,5,H5 unsafe; buildings damaged,391.35,521,3945
+200,baseline,6,H6 unsafe; buildings fail,215.2,102,581
+200,scheme,1,H1 generally safe,173.34,342,1676
+200,scheme,2,H2 unsafe small vehicles,70.48,141,535
+200,scheme,3,H3 unsafe vehicles/children/elderly,85.29,172,539
+200,scheme,4,H4 unsafe for people,52.55,53,202
+200,scheme,5,H5 unsafe; buildings damaged,87.6,59,305
+200,scheme,6,H6 unsafe; buildings fail,22.34,1,4
+500,baseline,1,H1 generally safe,0.0,0,0
+500,baseline,2,H2 unsafe small vehicles,0.0,0,0
+500,baseline,3,H3 unsafe vehicles/children/elderly,0.0,0,0
+500,baseline,4,H4 unsafe for people,0.0,0,0
+500,baseline,5,H5 unsafe; buildings damaged,0.0,0,0
+500,baseline,6,H6 unsafe; buildings fail,0.0,0,0
+500,scheme,1,H1 generally safe,147.26,303,1567
+500,scheme,2,H2 unsafe small vehicles,57.85,144,552
+500,scheme,3,H3 unsafe vehicles/children/elderly,67.28,190,755
+500,scheme,4,H4 unsafe for people,77.98,82,390
+500,scheme,5,H5 unsafe; buildings damaged,145.2,56,403
+500,scheme,6,H6 unsafe; buildings fail,72.4,28,174
+1000,baseline,1,H1 generally safe,26.52,88,294
+1000,baseline,2,H2 unsafe small vehicles,15.77,36,134
+1000,baseline,3,H3 unsafe vehicles/children/elderly,11.67,43,105
+1000,baseline,4,H4 unsafe for people,22.28,54,231
+1000,baseline,5,H5 unsafe; buildings damaged,242.26,390,3086
+1000,baseline,6,H6 unsafe; buildings fail,464.33,408,2886
+1000,scheme,1,H1 generally safe,124.23,277,1529
+1000,scheme,2,H2 unsafe small vehicles,55.14,150,504
+1000,scheme,3,H3 unsafe vehicles/children/elderly,55.81,161,534
+1000,scheme,4,H4 unsafe for people,64.36,129,541
+1000,scheme,5,H5 unsafe; buildings damaged,178.57,105,931
+1000,scheme,6,H6 unsafe; buildings fail,148.88,28,277
+10000,baseline,1,H1 generally safe,18.46,57,273
+10000,baseline,2,H2 unsafe small vehicles,11.71,44,141
+10000,baseline,3,H3 unsafe vehicles/children/elderly,7.63,38,100
+10000,baseline,4,H4 unsafe for people,15.07,36,124
+10000,baseline,5,H5 unsafe; buildings damaged,119.49,205,1245
+10000,baseline,6,H6 unsafe; buildings fail,634.43,673,5143
+10000,scheme,1,H1 generally safe,50.03,109,701
+10000,scheme,2,H2 unsafe small vehicles,32.03,79,432
+10000,scheme,3,H3 unsafe vehicles/children/elderly,31.28,74,479
+10000,scheme,4,H4 unsafe for people,44.35,77,553
+10000,scheme,5,H5 unsafe; buildings damaged,215.62,369,2155
+10000,scheme,6,H6 unsafe; buildings fail,397.4,309,2184

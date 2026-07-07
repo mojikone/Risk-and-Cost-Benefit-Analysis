@@ -71,7 +71,7 @@ DAMAGE_CURVES = {  # OMR per m2 at each depth in DAMAGE_DEPTHS
 }
 
 # ---------------------------------------------------------------- economics
-DISCOUNT_RATE = 0.025      # r
+DISCOUNT_RATE = 0.042      # r
 HORIZON_YEARS = 50         # n
 
 COST_DAM_OMR     = 75_000_000

@@ -21,3 +21,5 @@ output/avoided/
 node_modules/
 package-lock.json
 package.json
+Data/Hazard/
+output/hazard/*.tif
