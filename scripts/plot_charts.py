@@ -28,7 +28,8 @@ def fig_curves():
                     color=col, va="center", fontweight="bold")
     ax.set_xlabel("Flood depth (m)"); ax.set_ylabel("Damage (OMR / m²)")
     ax.set_title("Depth–Damage Functions by Land-Use Class  (Oman, 2023 price level)")
-    ax.set_xlim(0, 6.7); ax.grid(alpha=.3); ax.legend(loc="center right")
+    ax.set_xlim(0, 7.0); ax.set_ylim(top=max(C.DAMAGE_CURVES["Commercial"]) * 1.18)
+    ax.grid(alpha=.3); ax.legend(loc="upper left", framealpha=.95)
     fig.tight_layout(); fig.savefig(os.path.join(C.OUT_DIR, "chart_depth_damage_curves.png"), dpi=150)
 
 
@@ -74,7 +75,7 @@ def fig_damage_class():
             ax.bar(x, vals, bottom=bottom, color=PLOT[c], label=c); bottom += vals
         for xi, tot in zip(x, bottom):
             ax.annotate(f"{tot:.1f}", (xi, tot), textcoords="offset points",
-                        xytext=(0, 2), ha="center", fontsize=7.5, fontweight="bold")
+                        xytext=(0, 3), ha="center", fontsize=10, fontweight="bold")
         ax.set_xticks(x); ax.set_xticklabels([str(rp) for rp in rps], rotation=45)
         ax.set_xlabel("Return period (yr)"); ax.set_title(cond.title())
         ax.grid(alpha=.3, axis="y")

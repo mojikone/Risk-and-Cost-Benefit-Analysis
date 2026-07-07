@@ -44,7 +44,7 @@ def main():
     ax1.fill_between(pp, 0, dss, color="#9db8c9", alpha=.55,
                      label=f"Scheme residual (AED = {aed_s:.2f} M/yr)")
     ax1.plot(pp, dbb, "-o", color="#2b3a55", lw=2, ms=5, label=f"Baseline (AED = {aed_b:.2f} M/yr)")
-    ax1.plot(pp, dss, "-o", color="#c0562b", lw=2, ms=5, label="Dam + channel scheme")
+    ax1.plot(pp, dss, "-o", color="#c0562b", lw=2, ms=5, label="Scheme")
     ax1.set_xlabel("Annual exceedance probability  (1 / return period)")
     ax1.set_ylabel("Flood damage  (million OMR)")
     ax1.set_title("AED — area under curve = expected annual damage")
@@ -58,7 +58,7 @@ def main():
 
     # ---- panel 2: return-period axis (engineering view) ----------------------
     ax2.plot(rps, db, "-o", color="#2b3a55", lw=2, ms=5, label="Baseline")
-    ax2.plot(rps, ds, "-o", color="#c0562b", lw=2, ms=5, label="Dam + channel scheme")
+    ax2.plot(rps, ds, "-o", color="#c0562b", lw=2, ms=5, label="Scheme")
     ax2.fill_between(rps, ds, db, color="#f0a54a", alpha=.6, label="Avoided (per event)")
     ax2.set_xscale("log")
     ax2.set_xlabel("Return period  (years, log scale)")
