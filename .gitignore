@@ -27,5 +27,5 @@ build/
 Data/DOC/Techno-Economical assessment Report*.docx
 output/*- Copy.docx
 
-# Map atlas PDF — 89 MB, regenerable with scripts/build_map_atlas.py
-output/Majlas_Map_Atlas.pdf
+# Map atlas PDF — regenerable with scripts/build_map_atlas.py (too large for git)
+Majlas_Map_Atlas.pdf

@@ -8,14 +8,19 @@ periods (2 … 10 000 yr) and produces:
 
 - **Annual Expected Damage (AED)** for each condition and the **avoided damage**,
 - financial metrics **NPV** and **BCR** over the project horizon,
+- **flood hazard classification (H1–H6, Australian AIDR)** — people, plots and area in
+  each hazard class, and in particular the **H4+ "unsafe for people"** population,
 - non-monetized **population exposure** (people flooded, and people in life-threatening
   >1 m water) and the **Expected Annual People Exposed (EAPE)** avoided,
-- a full set of cartographic maps, charts, tables, and a **live Excel model** the client
-  can re-run with different assumptions.
+- a full set of cartographic maps, charts, tables, a **print-ready map atlas (PDF)**, a
+  **live Excel model** the client can re-run with different assumptions, and a compiled
+  client report.
 
 The honest finding: the scheme **fails a pure damage-based test (BCR ≈ 0.08)** but is a
-strong **life-safety** intervention (removes ~90% of the population from >1 m flooding at
-the 100 yr event). Both stories are reported side by side.
+strong **life-safety** intervention — at the 200 yr design event it removes **90% of the
+people standing in hazard unsafe for life (H4+, 5,222 → 510)**. The decision is taken on
+the combined economic + flood-hazard basis, not on the BCR alone. Both stories are
+reported side by side.
 
 ## Inputs needed
 | Input | Description | Location / source |
@@ -47,6 +52,7 @@ the 100 yr event). Both stories are reported side by side.
 | `hazard/hazard_class_summary.csv`, `hazard/hazard_by_rp.csv` | Hazard H1–H6 exposure (area, plots, people); unsafe-for-people (H4+) by RP |
 | **`Techno-Economical Assessment Report.docx`** | Client report on the client template (cover, header, styles) — TOC / list of figures / list of tables, roman front matter then arabic body, native Word (OMML) equations, hazard analysis, decision assessment |
 | **`Majlas_CBA.xlsx`** | **Live cost-benefit workbook** — edit the yellow Inputs (costs, discount rate, horizon, maintenance) and AED/NPV/BCR/EAPE recompute via formulas |
+| **`Majlas_Map_Atlas.pdf`** | **Print-ready A4-landscape atlas** — cover, Table of Maps, all 62 maps one per page, running footers, PDF bookmarks (not version-controlled — 89 MB, regenerable) |
 | `damage/damage_<RP>_<cond>.tif` | Per-pixel damage rasters (intermediate; not version-controlled) |
 
 Maps are authored as **QGIS print layouts** in `Data/QGIS RISK.qgz` and exported to
@@ -60,8 +66,10 @@ Maps are authored as **QGIS print layouts** in `Data/QGIS RISK.qgz` and exported
 | Initial cost (dam 75 + dykes 5 + relocation 0.17) | 80.2 M OMR |
 | **NPV** (50 yr @ 4.2%) | **−86.0 M OMR** |
 | **BCR** | **0.083** |
-| EAPE avoided | ~809 people/yr |
-| Life-safety (people in >1 m @100 yr) | 3,564 → 374 (−89%) |
+| EAPE avoided | ~809 people/yr (all water); ~345/yr (>1 m) |
+| **Life-safety (people in hazard H4+ @200 yr)** | **5,222 → 510 (−90%)** |
+| Life-safety (people in hazard H4+ @500 yr) | 5,947 → 967 (−84%) |
+| Multi-criteria decision score | 3 / 5 — moderately favourable |
 
 ## Pipeline (`scripts/`)
 | Script | Purpose |
@@ -78,7 +86,32 @@ Maps are authored as **QGIS print layouts** in `Data/QGIS RISK.qgz` and exported
 | `run_all.py` | End-to-end damage → AED → NPV/BCR |
 | `plot_aed.py` / `plot_charts.py` | Charts |
 | `build_workbook.py` | Builds the live Excel model |
+| `build_map_atlas.py` | Combines all 62 maps into the print-ready atlas PDF |
 | `sensitivity.py` | Break-even (dam cost / benefit multiplier) |
 
-Depth layers, damage/population rasters and archives are excluded via `.gitignore`
-(regenerable from the HEC-RAS model). CRS: WGS84 UTM 40N (EPSG:32640).
+Depth layers, damage/population rasters, the atlas PDF and archives are excluded via
+`.gitignore` (all regenerable). CRS: WGS84 UTM 40N (EPSG:32640).
+
+## QGIS Processing tool (`qgis_tool/`)
+`majlas_cba_tool.py` registers **"Flood CBA (config-driven)"** in the QGIS Processing
+Toolbox so the analysis can be re-run on any scheme without touching `config.py`. Nothing
+is hard-coded: the number of depth layers, the depth-damage curve table, the land-use
+classes, the number of scenarios, maintenance rates/start years and per-class relocation
+unit prices are all supplied as layers and CSVs.
+
+| Tool input | File |
+|---|---|
+| Land-use layer + class field | any polygon layer |
+| Depth-damage curves | `examples/depth_damage_curves.csv` |
+| Depth layer manifest (scenario, return_period, raster) | `examples/depth_manifest.csv` |
+| Scenario costs (capital, maintenance rate, start year) | `examples/scenario_costs.csv` |
+| Relocation unit prices per class | `examples/relocation_unit_prices.csv` |
+| Project outline, discount rate, horizon, output folder | tool parameters |
+
+It reproduces the Python pipeline exactly (verified: AED baseline 771,767; avoided
+373,939; relocation 168,080).
+
+**Status / next step.** The tool currently covers damage → AED → relocation → NPV/BCR.
+Work in progress is to bring it to full parity with `scripts/`: population exposure and
+EAPE, hazard H1–H6 statistics, the per-plot enriched shapefile, chart and print-layout map
+generation, and the map atlas — so every step of this analysis runs from inside QGIS.
