@@ -6,7 +6,7 @@ const {
   TableOfContents, PageBreak
 } = require("docx");
 
-const OUT = "output", MAPS = "output/maps", CW = 9026;
+const OUT = "output", MAPS = "output/maps", FIG = "Data/Figures", CW = 9026;
 const HZ = JSON.parse(fs.readFileSync("output/hazard/hazard_tables.json", "utf8"));
 const styles = fs.readFileSync("build/sample_styles.xml", "utf8");
 
@@ -14,6 +14,8 @@ let figN = 0, tabN = 0;
 const P = (runs, o = {}) => new Paragraph({ spacing: { after: 120 }, ...o,
   children: Array.isArray(runs) ? runs : [new TextRun(runs)] });
 const H1 = t => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(t)] });
+// Heading 1 without list numbering (merge_report.py defines the style); still outline level 0, so it lists in the TOC
+const H1u = t => new Paragraph({ style: "Heading1NoNum", children: [new TextRun(t)] });
 const H2 = t => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(t)] });
 const bul = t => new Paragraph({ style: "bullets", children: Array.isArray(t) ? t : [new TextRun(t)] });
 const eqP = children => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 80, after: 140 },
@@ -91,11 +93,20 @@ const DMG = [["2","430,603","413,027","17,576"],["5","1,011,369","667,876","343,
 const HW = [900,1160,1160,1160,1160,1160,1160,1166];
 const HH = ["RP (yr)","H1","H2","H3","H4","H5","H6","Total"];
 
+// depth-damage functions: JRC global curves, Oman price level 2023 (OMR/m²)
+const DDH = ["Flood depth (m)","Residential buildings","Commercial buildings","Industrial buildings","Infrastructure — roads","Agriculture"];
+const DDW = [1226,1560,1560,1560,1560,1560];
+const DD = [["0","0.0","0.0","0.0","0.0","0.000"],["0.5","20.6","50.4","31.4","4.6","0.002"],
+ ["1","31.2","71.9","53.4","8.0","0.007"],["1.5","38.9","88.1","69.7","12.9","0.009"],
+ ["2","45.5","102.0","79.5","15.2","0.010"],["3","54.8","118.1","94.9","17.3","0.012"],
+ ["4","58.7","125.9","100.7","19.0","0.015"],["5","62.0","131.1","105.8","20.8","0.017"],
+ ["6","63.1","133.7","110.8","21.4","0.018"]];
+
 const children = [
   ...frontMatter(),
 
   // ---------------- Executive summary ----------------
-  H1("Executive Summary"),
+  H1u("Executive Summary"),
   P("The Wadi Majlas flood-protection scheme comprises a storage dam on the wadi and downstream channel dykes. This report assesses the scheme against the do-nothing baseline on two grounds: the economic return on avoided flood damage, and the reduction in flood hazard to the population. Ten return periods from 2 to 10,000 years were modelled for both conditions; the scheme is designed to the 200-year flood and checked at the 500-year event."),
   P("Direct flood damage avoided by the scheme amounts to 0.37 M OMR per year. Discounted at 4.2% over a 50-year horizon this is worth 7.8 M OMR, against an initial cost of 80.2 M OMR and 13.6 M OMR of discounted maintenance. The scheme therefore returns a benefit-cost ratio of 0.08 and a net present value of −86.0 M OMR. The protected land is predominantly agricultural and low-density residential, and the works reduce flood depth more than flood extent, so the monetary benefit is inherently modest."),
   P("The decisive benefit is to life. Classified against the Australian flood hazard vulnerability curves, the number of residents standing in floodwater that is unsafe for people (hazard class H4 and above) falls from 5,222 to 510 at the 200-year design event — a 90% reduction — and from 5,947 to 967 at the 500-year check. In expected-annual terms the scheme keeps 809 people per year out of floodwater altogether."),
@@ -115,11 +126,17 @@ const children = [
   P("Flooding is simulated with a two-dimensional HEC-RAS model of the wadi and floodplain. Maximum flood depth and maximum flow velocity are exported on a 2 m grid for ten return periods (2, 5, 10, 25, 50, 100, 200, 500, 1,000 and 10,000 years) under two conditions: the baseline, and the scheme with the dam and dykes represented in the terrain. All spatial data are held in WGS 84 / UTM Zone 40N (EPSG:32640). Land use is taken from the cadastral plot layer, and resident population from the GHS-POP 2025 gridded dataset."),
 
   H2("Flood damage"),
+  P("Flood damage is evaluated following the HEC-FDA methodology, in which hydrology, hydraulics and economics are chained together and the result is integrated over probability. Discharge is drawn from the flood-frequency curve, converted to stage by the hydraulic model, converted to damage by the depth-damage function, and finally re-expressed against exceedance probability; the area beneath that last curve is the expected annual damage."),
+  ...figure(FIG + "/hecfda_pipeline.png", 420, 337, "HEC-FDA depth-damage pipeline: (a) discharge-probability, (b) stage-discharge, (c) depth-damage, (d) damage-probability"),
   P("Damage is evaluated cell by cell rather than plot by plot, so that partial inundation of a plot is captured correctly. Every 2 m cell is assigned a land-use class from the cadastral layer, and its flood depth is read from the model. A depth-damage function for that class returns the damage per square metre at that depth; multiplying by the cell area and summing over all flooded cells gives the total direct damage for the event:"),
   eqDamage(),
   P([ new TextRun("Here "), new TextRun({ text: "f", italics: true }), new TextRun("ᶜ(h) is the depth-damage value (OMR/m²) for land-use class "),
       new TextRun({ text: "c", italics: true }), new TextRun(" at flood depth "), new TextRun({ text: "h", italics: true }),
-      new TextRun(", and "), new TextRun({ text: "a", italics: true }), new TextRun(" is the cell area (4 m²). Depth-damage functions are the JRC global curves calibrated to Oman at 2023 price level, defined separately for residential, commercial, industrial, road and agricultural land.") ]),
+      new TextRun(", and "), new TextRun({ text: "a", italics: true }), new TextRun(" is the cell area (4 m²). Depth-damage functions are the JRC global curves calibrated to Oman at 2023 price level, defined separately for residential, commercial, industrial, road and agricultural land. The adopted values are tabulated below; intermediate depths are linearly interpolated, and values above 6 m are held constant.") ]),
+  tblCaption("Depth-damage curves — JRC global functions, adjusted to the Oman price level (2023), in OMR/m²"),
+  table(DDH, DD, DDW),
+  ...figure(OUT + "/chart_depth_damage_curves.png", 560, 355, "Depth-damage curves by land-use class"),
+  P("Commercial and industrial buildings carry the highest damage rates, residential property the bulk of the exposed value, and agriculture — although it occupies the largest flooded area — contributes almost nothing, its rates being two orders of magnitude lower."),
 
   H2("Annual Expected Damage"),
   P([ new TextRun("A single event does not describe risk. Damage is therefore integrated over the annual exceedance probability "),
@@ -144,7 +161,8 @@ const children = [
   P("EAPE is reported for all floodwater and, as a life-safety measure, for water deeper than one metre. The reduction the scheme delivers is termed the EAPE avoided."),
 
   H2("Flood hazard classification"),
-  P("Depth alone understates danger: shallow water moving quickly can sweep a person off their feet. Flood hazard to life is therefore derived in the hydraulic model from the combination of flow depth and velocity, and classified into six categories, H1 to H6, against the Australian combined hazard vulnerability curves (Smith et al., 2014; AIDR Guideline 7-3, Figure 6). The classification is threshold-based on depth, velocity and their product; it is not a single algebraic index. From class H4 upward, floodwater is unsafe for people. Section 6 sets out the classes and the resulting exposure."),
+  P("Depth alone understates danger: shallow water moving quickly can sweep a person off their feet. Flood hazard to life is therefore derived in the hydraulic model from the combination of flow depth and velocity, and classified into six categories, H1 to H6, against the Australian combined hazard vulnerability curves (Smith et al., 2014; AIDR Guideline 7-3), reproduced below. The classification is threshold-based on depth, velocity and their product; it is not a single algebraic index. From class H4 upward, floodwater is unsafe for people. Section 6 sets out the classes and the resulting exposure."),
+  ...figure(FIG + "/hazard_vulnerability_curves.png", 430, 344, "General flood hazard vulnerability curves (Australian AIDR Guideline 7-3)"),
 
   H2("Decision framework"),
   P("The benefit-cost ratio measures only avoided property damage. Loss of life, continuity of access and livelihood protection are real benefits that it cannot see. The two strands are therefore brought together in a transparent multi-criteria assessment (Section 9), in which the economic result and the flood-hazard result are weighted alongside the wider factors to produce a single, auditable score."),
@@ -271,20 +289,20 @@ const children = [
   P("Flood depth, flood hazard and direct damage at the 200-year design event and the 500-year control, baseline then scheme are provided below. The complete set for all return periods accompanies this report."),
 
   H2("200-year event — design target"),
-  ...figure(MAPS + "/depth_200yr_baseline.png", 560, 396, "Flood depth, 200-year — baseline"),
-  ...figure(MAPS + "/depth_200yr_scheme.png", 560, 396, "Flood depth, 200-year — scheme"),
-  ...figure(MAPS + "/hazard_200yr_baseline.png", 560, 396, "Flood hazard (H1–H6), 200-year — baseline"),
-  ...figure(MAPS + "/hazard_200yr_scheme.png", 560, 396, "Flood hazard (H1–H6), 200-year — scheme"),
-  ...figure(MAPS + "/damage_200yr_baseline.png", 560, 396, "Flood damage, 200-year — baseline"),
-  ...figure(MAPS + "/damage_200yr_scheme.png", 560, 396, "Flood damage, 200-year — scheme"),
+  ...figure(MAPS + "/depth_200yr_baseline.png", 529.6, 374.4, "Flood depth, 200-year — baseline"),
+  ...figure(MAPS + "/depth_200yr_scheme.png", 529.6, 374.4, "Flood depth, 200-year — scheme"),
+  ...figure(MAPS + "/hazard_200yr_baseline.png", 529.6, 374.4, "Flood hazard (H1–H6), 200-year — baseline"),
+  ...figure(MAPS + "/hazard_200yr_scheme.png", 529.6, 374.4, "Flood hazard (H1–H6), 200-year — scheme"),
+  ...figure(MAPS + "/damage_200yr_baseline.png", 529.6, 374.4, "Flood damage, 200-year — baseline"),
+  ...figure(MAPS + "/damage_200yr_scheme.png", 529.6, 374.4, "Flood damage, 200-year — scheme"),
 
   H2("500-year event — control"),
-  ...figure(MAPS + "/depth_500yr_baseline.png", 560, 396, "Flood depth, 500-year — baseline"),
-  ...figure(MAPS + "/depth_500yr_scheme.png", 560, 396, "Flood depth, 500-year — scheme"),
-  ...figure(MAPS + "/hazard_500yr_baseline.png", 560, 396, "Flood hazard (H1–H6), 500-year — baseline"),
-  ...figure(MAPS + "/hazard_500yr_scheme.png", 560, 396, "Flood hazard (H1–H6), 500-year — scheme"),
-  ...figure(MAPS + "/damage_500yr_baseline.png", 560, 396, "Flood damage, 500-year — baseline"),
-  ...figure(MAPS + "/damage_500yr_scheme.png", 560, 396, "Flood damage, 500-year — scheme"),
+  ...figure(MAPS + "/depth_500yr_baseline.png", 529.6, 374.4, "Flood depth, 500-year — baseline"),
+  ...figure(MAPS + "/depth_500yr_scheme.png", 529.6, 374.4, "Flood depth, 500-year — scheme"),
+  ...figure(MAPS + "/hazard_500yr_baseline.png", 529.6, 374.4, "Flood hazard (H1–H6), 500-year — baseline"),
+  ...figure(MAPS + "/hazard_500yr_scheme.png", 529.6, 374.4, "Flood hazard (H1–H6), 500-year — scheme"),
+  ...figure(MAPS + "/damage_500yr_baseline.png", 529.6, 374.4, "Flood damage, 500-year — baseline"),
+  ...figure(MAPS + "/damage_500yr_scheme.png", 529.6, 374.4, "Flood damage, 500-year — scheme"),
 
   // ---------------- 11 Conclusion ----------------
   H1("Conclusion"),
