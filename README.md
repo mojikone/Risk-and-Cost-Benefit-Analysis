@@ -36,6 +36,7 @@ reported side by side.
 | **Scheme shapefiles (for maps)** | Project works used to annotate scheme maps: **Dam axis**, **Dykes**, **channels**, and the **project outline** (relocation footprint) | `Data/SHP/` + the QGIS project |
 | **Population raster** | GHS-POP 2025 (persons/cell) for exposure & EAPE | `Data/Population/` (not version-controlled) |
 | **Basemap / terrain** | Google Satellite Hybrid (cartography) and DTM (context); CRS **EPSG:32640** throughout | QGIS project |
+| **Reference figures** | Reference diagrams reproduced in the report: AIDR flood-hazard vulnerability curves, HEC-FDA depth-damage pipeline | `Data/Figures/` |
 
 ## Outputs (`output/`)
 | Output | Description |
