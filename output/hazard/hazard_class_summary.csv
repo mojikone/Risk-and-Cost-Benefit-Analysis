@@ -1,4 +1,10 @@
 rp,condition,hclass,desc,area_ha,plots,people
+2,baseline,1,H1 generally safe,136.16,291,1002
+2,baseline,2,H2 unsafe small vehicles,50.86,91,306
+2,baseline,3,H3 unsafe vehicles/children/elderly,68.59,119,344
+2,baseline,4,H4 unsafe for people,31.52,24,93
+2,baseline,5,H5 unsafe; buildings damaged,28.25,7,56
+2,baseline,6,H6 unsafe; buildings fail,3.13,0,1
 2,scheme,1,H1 generally safe,116.91,315,780
 2,scheme,2,H2 unsafe small vehicles,21.64,60,115
 2,scheme,3,H3 unsafe vehicles/children/elderly,28.46,52,130

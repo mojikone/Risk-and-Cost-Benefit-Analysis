@@ -13,8 +13,7 @@ import config as C
 M = 1e6
 HCOL = {1:"#0000ff", 2:"#00ecff", 3:"#00a504", 4:"#00ff30", 5:"#fff900", 6:"#f41f1f"}
 HLAB = {1:"H1 safe", 2:"H2", 3:"H3", 4:"H4 unsafe for people", 5:"H5", 6:"H6 buildings fail"}
-# 2-yr baseline hazard grid was not exported
-RPS = [5, 10, 25, 50, 100, 200, 500, 1000, 10000]
+RPS = [2, 5, 10, 25, 50, 100, 200, 500, 1000, 10000]
 
 
 def _haz():
@@ -109,7 +108,7 @@ def fig_mca():
                     textcoords="offset points", va="center", fontsize=9)
     ax.set_yticks(y); ax.set_yticklabels(crit, fontsize=9)
     ax.set_xlim(0, 1.9); ax.set_xlabel("Weighted contribution to overall score")
-    ax.set_title(f"Multi-criteria decision assessment — overall {sum(wsc):.2f} / 5", weight="bold")
+    ax.set_title(f"Multi-criteria decision assessment — overall {sum(wsc):g} / 5", weight="bold")
     ax.grid(alpha=.3, axis="x")
     fig.tight_layout(); fig.savefig(os.path.join(C.OUT_DIR, "chart_mca.png"), dpi=150); plt.close(fig)
 

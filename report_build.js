@@ -2,7 +2,8 @@ const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun,
   AlignmentType, HeadingLevel, WidthType, Math, MathRun, MathSum, MathIntegral,
-  MathFraction, MathSubScript, MathSuperScript
+  MathFraction, MathSubScript, MathSuperScript, SequentialIdentifier,
+  TableOfContents, PageBreak
 } = require("docx");
 
 const OUT = "output", MAPS = "output/maps", CW = 9026;
@@ -18,6 +19,7 @@ const bul = t => new Paragraph({ style: "bullets", children: Array.isArray(t) ? 
 const eqP = children => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 80, after: 140 },
   children: [new Math({ children })] });
 
+// captions use SEQ fields so Word auto-numbers them and the lists of figures/tables populate
 const figure = (path, w, h, title) => {
   figN++;
   return [
@@ -25,12 +27,26 @@ const figure = (path, w, h, title) => {
       children: [new ImageRun({ type: "png", data: fs.readFileSync(path), transformation: { width: w, height: h },
         altText: { title, description: title, name: "fig" } })] }),
     new Paragraph({ style: "Caption", alignment: AlignmentType.CENTER, spacing: { after: 180 },
-      children: [new TextRun(`Figure ${figN}- ${title}`)] })
+      children: [new TextRun("Figure "), new SequentialIdentifier("Figure"), new TextRun(`- ${title}`)] })
   ];
 };
 
 const tblCaption = title => { tabN++; return new Paragraph({ style: "Caption", spacing: { before: 140, after: 60 },
-  children: [new TextRun(`Table ${tabN}- ${title}`)] }); };
+  children: [new TextRun("Table "), new SequentialIdentifier("Table"), new TextRun(`- ${title}`)] }); };
+
+// front matter: TOC, list of figures, list of tables, then a marker the merge turns
+// into a section break (roman numbering before it, arabic restarting at 1 after)
+const frontMatter = () => [
+  new Paragraph({ style: "TOCHeading", children: [new TextRun("Table of Contents")] }),
+  new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" }),
+  new Paragraph({ children: [new PageBreak()] }),
+  new Paragraph({ style: "TOCHeading", children: [new TextRun("List of Figures")] }),
+  new TableOfContents("List of Figures", { hyperlink: true, captionLabel: "Figure" }),
+  new Paragraph({ children: [new PageBreak()] }),
+  new Paragraph({ style: "TOCHeading", children: [new TextRun("List of Tables")] }),
+  new TableOfContents("List of Tables", { hyperlink: true, captionLabel: "Table" }),
+  new Paragraph({ children: [new TextRun("@@SECTBREAK@@")] }),
+];
 
 function table(headers, rows, widths, boldLastRow) {
   const cell = (txt, o = {}) => new TableCell({ width: { size: o.w, type: WidthType.DXA },
@@ -76,12 +92,14 @@ const HW = [900,1160,1160,1160,1160,1160,1160,1166];
 const HH = ["RP (yr)","H1","H2","H3","H4","H5","H6","Total"];
 
 const children = [
+  ...frontMatter(),
+
   // ---------------- Executive summary ----------------
   H1("Executive Summary"),
   P("The Wadi Majlas flood-protection scheme comprises a storage dam on the wadi and downstream channel dykes. This report assesses the scheme against the do-nothing baseline on two grounds: the economic return on avoided flood damage, and the reduction in flood hazard to the population. Ten return periods from 2 to 10,000 years were modelled for both conditions; the scheme is designed to the 200-year flood and checked at the 500-year event."),
   P("Direct flood damage avoided by the scheme amounts to 0.37 M OMR per year. Discounted at 4.2% over a 50-year horizon this is worth 7.8 M OMR, against an initial cost of 80.2 M OMR and 13.6 M OMR of discounted maintenance. The scheme therefore returns a benefit-cost ratio of 0.08 and a net present value of −86.0 M OMR. The protected land is predominantly agricultural and low-density residential, and the works reduce flood depth more than flood extent, so the monetary benefit is inherently modest."),
   P("The decisive benefit is to life. Classified against the Australian flood hazard vulnerability curves, the number of residents standing in floodwater that is unsafe for people (hazard class H4 and above) falls from 5,222 to 510 at the 200-year design event — a 90% reduction — and from 5,947 to 967 at the 500-year check. In expected-annual terms the scheme keeps 809 people per year out of floodwater altogether."),
-  P("Weighed across economic return, flood hazard to life, design-standard compliance, access to essential services, livelihoods and environment, the scheme scores 3.0 out of 5 — moderately favourable. The recommendation is that the investment decision be taken on this combined economic and flood-hazard basis, rather than on the benefit-cost ratio alone, which values only property damage and is blind to loss of life."),
+  P("Weighed across economic return, flood hazard to life, design-standard compliance, access to essential services, livelihoods and environment, the scheme scores 3 out of 5 — moderately favourable. The recommendation is that the investment decision be taken on this combined economic and flood-hazard basis, rather than on the benefit-cost ratio alone, which values only property damage and is blind to loss of life."),
 
   // ---------------- 1 Introduction ----------------
   H1("Introduction"),
@@ -133,22 +151,22 @@ const children = [
 
   // ---------------- 3 Assumptions ----------------
   H1("Assumptions and inputs"),
-  P("The modelling and spatial data are described in Section 2. The parameters below are the economic assumptions adopted for the appraisal; each may be varied in the accompanying cost-benefit workbook."),
+  P("The modelling and spatial data are described in Section 2. The parameters below are the economic assumptions adopted for the appraisal; each may be varied in the accompanying cost-benefit workbook. Capital costs and unit land prices are as advised by the client; the relocation cost is derived from the plots falling within the works footprint multiplied by the unit land price of each; the discount rate is a client instruction; and the horizon is the design life of the works."),
   tblCaption("Economic assumptions adopted for the appraisal"),
-  table(["Parameter", "Value", "Basis"], [
-    ["Dam capital cost", "75,000,000 OMR", "Client estimate"],
-    ["Dyke / channel capital cost", "5,000,000 OMR", "Client estimate"],
-    ["Relocation cost", "168,080 OMR", "Plots within the works footprint × unit land price"],
-    ["Unit land price — residential", "15 OMR/m²", "Client rate"],
-    ["Unit land price — commercial / industrial", "20 OMR/m²", "Client rate"],
-    ["Unit land price — agricultural", "2 OMR/m²", "Client rate"],
-    ["Maintenance — dam", "1.0% of capital per year, from year 5", "Standard allowance"],
-    ["Maintenance — dykes", "0.7% of capital per year, from year 2", "Standard allowance"],
-    ["Real discount rate", "4.2%", "Client instruction"],
-    ["Appraisal horizon", "50 years", "Design life"],
-    ["Damage below the 2-year event", "Zero", "Standard AED tail treatment"],
-    ["Damage above the 10,000-year event", "Held constant", "Standard AED tail treatment"],
-  ], [2600, 2500, 3926]),
+  table(["Parameter", "Value"], [
+    ["Dam capital cost", "75,000,000 OMR"],
+    ["Dyke / channel capital cost", "5,000,000 OMR"],
+    ["Relocation cost", "168,080 OMR"],
+    ["Unit land price — residential", "15 OMR/m²"],
+    ["Unit land price — commercial / industrial", "20 OMR/m²"],
+    ["Unit land price — agricultural", "2 OMR/m²"],
+    ["Maintenance — dam", "1.0% of capital per year, from year 5"],
+    ["Maintenance — dykes", "0.7% of capital per year, from year 2"],
+    ["Real discount rate", "4.2%"],
+    ["Appraisal horizon", "50 years"],
+    ["Damage below the 2-year event", "Zero"],
+    ["Damage above the 10,000-year event", "Held constant"],
+  ], [4513, 4513]),
 
   // ---------------- 4 Flood damage ----------------
   H1("Flood damage"),
@@ -193,7 +211,7 @@ const children = [
   ...figure(OUT + "/chart_hazard_plots_area.png", 600, 400, "Plots and inundated area by flood hazard class, baseline and scheme"),
 
   H2("Hazard exposure — detailed results"),
-  P("The following tables give, for every return period and both conditions, the number of people, the number of cadastral plots and the inundated area falling in each hazard class. Plots are assigned to their worst (maximum) hazard class. The 2-year baseline hazard grid was not exported and is omitted; it is immaterial to the design decision."),
+  P("The following tables give, for every return period and both conditions, the number of people, the number of cadastral plots and the inundated area falling in each hazard class. Plots are assigned to their worst (maximum) hazard class."),
 
   tblCaption("People by flood hazard class — baseline"),
   table(HH, HZ.people_baseline, HW),
@@ -243,14 +261,14 @@ const children = [
     ["Access to essential services", "10%", "4", "0.40", "Roads and hospital access maintained during floods"],
     ["Livelihoods and property", "10%", "3", "0.30", "Reduced repeat inundation of homes and farmland"],
     ["Environment and wadi morphology", "5%", "3", "0.15", "Reduced erosion and sedimentation"],
-    ["Overall", "100%", "—", "3.00 / 5", "Moderately favourable, despite weak economics"],
+    ["Overall", "100%", "—", "3 / 5", "Moderately favourable, despite weak economics"],
   ], [2450, 900, 900, 1100, 3676], true),
   ...figure(OUT + "/chart_mca.png", 590, 304, "Weighted contribution of each criterion to the overall decision score"),
-  P("The scheme scores 3.00 out of 5 — moderately favourable. The result is sensitive to the weight placed on economic return, which is deliberately the heaviest at 40%: were it weighted at 25% the score would rise to 3.60, and at 50% it would fall to about 2.70. In every case the conclusion is the same in direction — the single weak economic criterion is outweighed by strong performance on flood hazard to life and on design-standard compliance — but the client should adopt the weighting explicitly, as it is the pivot of the recommendation."),
+  P("The scheme scores 3 out of 5 — moderately favourable. The result is sensitive to the weight placed on economic return, which is deliberately the heaviest at 40%: were it weighted at 25% the score would rise to 3.60, and at 50% it would fall to about 2.70. In every case the conclusion is the same in direction — the single weak economic criterion is outweighed by strong performance on flood hazard to life and on design-standard compliance — but the client should adopt the weighting explicitly, as it is the pivot of the recommendation."),
 
   // ---------------- 10 Flood maps ----------------
   H1("Flood maps"),
-  P("Flood depth, flood hazard and direct damage at the 200-year design event and the 500-year control, baseline then scheme. On the scheme maps the dam axis is drawn in white and the dykes in black. The complete set for all return periods accompanies this report."),
+  P("Flood depth, flood hazard and direct damage at the 200-year design event and the 500-year control, baseline then scheme are provided below. The complete set for all return periods accompanies this report."),
 
   H2("200-year event — design target"),
   ...figure(MAPS + "/depth_200yr_baseline.png", 560, 396, "Flood depth, 200-year — baseline"),
@@ -274,15 +292,14 @@ const children = [
   P([new TextRun({ text: "Economic outcome. ", bold: true }), new TextRun("Measured on avoided direct damage alone, the scheme does not pay back: a benefit-cost ratio of 0.08 and a net present value of −86.0 M OMR. The reason is structural rather than hydraulic. The land protected is largely agricultural and low-density residential, whose damage rates are low, and the works reduce flood depth far more than flood extent, so the monetary saving is small relative to an 80 M OMR capital outlay. No plausible change to the discount rate alters this conclusion.")]),
   P([new TextRun({ text: "Flood hazard and life safety. ", bold: true }), new TextRun("Measured on hazard to life, the scheme is decisive. At the 200-year design event the population standing in floodwater unsafe for people falls from 5,222 to 510, a 90% reduction, and the plots so affected from 715 to 113. At the 500-year control the reduction is 84%. In expected-annual terms 809 people per year are kept out of floodwater. The scheme converts deep, fast water into shallow nuisance flooding across the town.")]),
   P([new TextRun({ text: "Wider benefits. ", bold: true }), new TextRun("Continuity of access to homes, the hospital and emergency services during an event; protection of farmland and businesses from repeated inundation; a reduced response and recovery burden; and reduced erosion of the wadi. None of these enter the benefit-cost ratio; all of them accrue.")]),
-  P([new TextRun({ text: "Overall judgement. ", bold: true }), new TextRun("Weighed across all criteria the scheme scores 3.00 out of 5 — moderately favourable. The economic criterion, weighted most heavily, scores lowest; it is outweighed by flood-hazard reduction to life and by design-standard compliance. The benefit-cost ratio, taken in isolation, is not a sufficient basis for this decision, because it prices property and ignores people.")]),
+  P([new TextRun({ text: "Overall judgement. ", bold: true }), new TextRun("Weighed across all criteria the scheme scores 3 out of 5 — moderately favourable. The economic criterion, weighted most heavily, scores lowest; it is outweighed by flood-hazard reduction to life and by design-standard compliance. The benefit-cost ratio, taken in isolation, is not a sufficient basis for this decision, because it prices property and ignores people.")]),
 
   // ---------------- 12 Recommendations ----------------
   H1("Recommendations"),
   bul([new TextRun({ text: "Adopt the combined economic and flood-hazard basis set out in Section 9 for the investment decision, rather than the benefit-cost ratio alone.", bold: true })]),
-  bul("Adopt the criterion weighting explicitly. The overall score is moderately favourable and is sensitive to the weight given to economic return; the weighting should be confirmed by the client as a matter of policy before the decision is recorded."),
-  bul("Proceed on the 200-year design standard. The 500-year control confirms that residual risk beyond the design event remains substantially reduced."),
-  bul("Complete the data set by exporting the 2-year baseline hazard grid, for consistency of the hazard series. It does not affect the design decision."),
-  bul("Retain the flood-hazard classification as the reporting basis for life safety in subsequent design stages, in preference to depth thresholds alone."),
+  bul("Quantify the value of the water the dam retains. Storage recovered over the life of the scheme — whether for supply, aquifer recharge or irrigation — is a benefit stream that this appraisal does not include. Establishing it requires a water-balance study of inflow, losses and abstraction, after which the benefit-cost ratio should be recalculated."),
+  bul("Quantify the development value of the land released. Land taken out of the floodplain by the works becomes safe to build on, and the resulting uplift is a further benefit absent from the present figures. It should be established through an urban-planning study and carried into the economic assessment of the dam and channels."),
+  P("Both studies would raise the benefit-cost ratio. Neither alters the flood-hazard conclusion, which already supports the scheme on its own terms."),
 ];
 
 const doc = new Document({ externalStyles: styles,

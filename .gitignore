@@ -25,3 +25,4 @@ Data/Hazard/
 output/hazard/*.tif
 build/
 Data/DOC/Techno-Economical assessment Report*.docx
+output/*- Copy.docx

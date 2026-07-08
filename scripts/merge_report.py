@@ -8,7 +8,7 @@ Images from the body are copied into the template package with fresh relationshi
 The header and cover title are re-worded for this report.
 Output: output/Techno-Economical Assessment Report.docx
 """
-import os, re, shutil, zipfile
+import os, re, shutil, time, zipfile
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TPL = os.path.join(BASE, "Data", "DOC", "sample 1.docx")
@@ -30,6 +30,15 @@ NS = {  # namespaces docx-js content may rely on
 def read_all(path):
     with zipfile.ZipFile(path) as z:
         return {n: z.read(n) for n in z.namelist()}
+
+
+def set_pgnum(sect, fmt, start):
+    """Set page-number format/start on a sectPr (pgNumType sits just before w:cols)."""
+    sect = re.sub(r"<w:pgNumType[^>]*/>", "", sect)
+    tag = f'<w:pgNumType w:fmt="{fmt}" w:start="{start}"/>'
+    if "<w:cols" in sect:
+        return sect.replace("<w:cols", tag + "<w:cols", 1)
+    return sect.replace("</w:sectPr>", tag + "</w:sectPr>")
 
 
 def main():
@@ -63,6 +72,12 @@ def main():
     if main_sect is None:
         raise SystemExit("could not find the header1 sectPr in the template")
 
+    # ---- page numbering: cover + front matter in roman, body restarting at 1
+    cover_sect = re.search(r"<w:sectPr.*?</w:sectPr>", cover, re.S).group(0)
+    cover = cover.replace(cover_sect, set_pgnum(cover_sect, "lowerRoman", 1))
+    front_sect = set_pgnum(main_sect, "lowerRoman", 2)   # TOC / LOF / LOT
+    final_sect = set_pgnum(main_sect, "decimal", 1)      # body restarts at 1
+
     # ---- body content (strip its trailing sectPr)
     bb0 = bdoc.index("<w:body>") + len("<w:body>")
     bb1 = bdoc.rindex("</w:body>")
@@ -70,6 +85,13 @@ def main():
     k = bcontent.rfind("<w:sectPr")
     if k != -1:
         bcontent = bcontent[:k]
+
+    # ---- turn the @@SECTBREAK@@ marker paragraph into the front-matter section break
+    i = bcontent.index("@@SECTBREAK@@")
+    p0 = bcontent.rfind("<w:p", 0, i)
+    p1 = bcontent.index("</w:p>", i) + len("</w:p>")
+    bcontent = bcontent[:p0] + f"<w:p><w:pPr>{front_sect}</w:pPr></w:p>" + bcontent[p1:]
+    main_sect = final_sect
 
     # ---- copy body media, remap relationship ids
     brels = body["word/_rels/document.xml.rels"].decode("utf-8")
@@ -127,7 +149,15 @@ def main():
             t = out[part].decode("utf-8").replace(f">{OLD_TITLE}<", f">{NEW_TITLE}<")
             out[part] = t.encode("utf-8")
 
+    # never silently destroy a reviewed copy: archive any existing report first
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    if os.path.exists(OUT):
+        arch = os.path.join(BASE, "build", "previous_reports")
+        os.makedirs(arch, exist_ok=True)
+        stamp = time.strftime("%Y%m%d-%H%M%S")
+        shutil.copy2(OUT, os.path.join(arch, f"report_{stamp}.docx"))
+        print(f"  archived previous report -> build/previous_reports/report_{stamp}.docx")
+
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in out.items():
             z.writestr(name, data)

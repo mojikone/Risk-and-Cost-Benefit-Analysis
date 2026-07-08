@@ -37,7 +37,7 @@ the 100 yr event). Both stories are reported side by side.
 |---|---|
 | `maps/depth_<RP>yr_<cond>.png` (20) | Flood-hazard depth maps, satellite basemap, per-map stats table + population footer |
 | `maps/damage_<RP>yr_<cond>.png` (20) | Direct-damage-intensity maps (OMR/m²) with damage/plots/area + population table |
-| `maps/hazard_<RP>yr_<cond>.png` (19) | Australian flood hazard (H1–H6) maps with per-class plots/area/people table |
+| `maps/hazard_<RP>yr_<cond>.png` (20) | Australian flood hazard (H1–H6) maps with per-class plots/area/people table |
 | `maps/landuse.png`, `maps/relocation.png` | Land-use classification; relocation footprint (keeps project outline) |
 | `AED_curves.png`, `chart_depth_damage_curves.png`, `chart_exposure.png`, `chart_damage_by_class.png`, `chart_hazard_people.png`, `chart_hazard_plots_area.png`, `chart_hazard_h4plus.png`, `chart_cost_benefit.png`, `chart_mca.png` | Analysis charts |
 | `damage_by_plan.csv`, `aed_summary.csv` | Damage per RP/condition; AED, avoided, NPV, BCR |
@@ -45,12 +45,12 @@ the 100 yr event). Both stories are reported side by side.
 | `plot_stats/enriched_landuse.shp` | **Per-plot** mean depth, damage, inundated area (>0.3 m) and population, every RP/condition |
 | `plot_stats/class_summary.csv`, `plot_stats/relocation.csv` | Per-class inundation/damage/population; relocation by class |
 | `hazard/hazard_class_summary.csv`, `hazard/hazard_by_rp.csv` | Hazard H1–H6 exposure (area, plots, people); unsafe-for-people (H4+) by RP |
-| **`Techno-Economical Assessment Report.docx`** | Client report (built on the client template: cover, header, styles) — methodology with native Word equations, results, hazard, decision assessment |
+| **`Techno-Economical Assessment Report.docx`** | Client report on the client template (cover, header, styles) — TOC / list of figures / list of tables, roman front matter then arabic body, native Word (OMML) equations, hazard analysis, decision assessment |
 | **`Majlas_CBA.xlsx`** | **Live cost-benefit workbook** — edit the yellow Inputs (costs, discount rate, horizon, maintenance) and AED/NPV/BCR/EAPE recompute via formulas |
 | `damage/damage_<RP>_<cond>.tif` | Per-pixel damage rasters (intermediate; not version-controlled) |
 
 Maps are authored as **QGIS print layouts** in `Data/QGIS RISK.qgz` and exported to
-`output/maps/` (61 maps total: depth, damage, hazard, land use, relocation).
+`output/maps/` (62 maps total: depth, damage, hazard, land use, relocation).
 
 ## Headline result
 | Metric | Value |
