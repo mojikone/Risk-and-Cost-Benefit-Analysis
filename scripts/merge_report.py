@@ -27,6 +27,15 @@ NS = {  # namespaces docx-js content may rely on
 }
 
 
+H1_NO_NUM = (
+    '<w:style w:type="paragraph" w:styleId="Heading1NoNum">'
+    '<w:name w:val="Heading 1 No Number"/><w:basedOn w:val="Heading1"/>'
+    '<w:next w:val="Normal"/><w:qFormat/>'
+    '<w:pPr><w:numPr><w:numId w:val="0"/></w:numPr><w:outlineLvl w:val="0"/></w:pPr>'
+    "</w:style>"
+)
+
+
 def read_all(path):
     with zipfile.ZipFile(path) as z:
         return {n: z.read(n) for n in z.namelist()}
@@ -133,6 +142,16 @@ def main():
         if f'Extension="{ext}"' not in ct:
             ct = ct.replace("</Types>", f'<Default Extension="{ext}" ContentType="{mime}"/></Types>')
     out["[Content_Types].xml"] = ct.encode("utf-8")
+
+    # ---- heading numbering must start at Introduction, not at the front matter
+    # TOCHeading is basedOn Heading1 and so inherits its numPr; strip it. Heading1NoNum
+    # gives the executive summary a Heading 1 look and outline level with no list number.
+    st = out["word/styles.xml"].decode("utf-8")
+    st = re.sub(r'(<w:style w:type="paragraph" w:styleId="TOCHeading">.*?<w:pPr>)',
+                r'\1<w:numPr><w:numId w:val="0"/></w:numPr>', st, count=1, flags=re.S)
+    if 'w:styleId="Heading1NoNum"' not in st:
+        st = st.replace("</w:styles>", H1_NO_NUM + "</w:styles>")
+    out["word/styles.xml"] = st.encode("utf-8")
 
     # ---- clean a schema nit inherited from the template
     if "word/numbering.xml" in out:
