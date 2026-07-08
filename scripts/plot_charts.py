@@ -43,16 +43,15 @@ def fig_exposure():
     d = _exposure(); rps = C.RP_YEARS
     col = lambda cond, k: [float(d[(rp, cond)][k]) for rp in rps]
     # EAPE (expected annual people exposed) via same integral as AED
-    eape = lambda k: (EC.aed({rp: float(d[(rp, 'baseline')][k]) for rp in rps})
-                      - EC.aed({rp: float(d[(rp, 'scheme')][k]) for rp in rps}))
-    av_tot = eape("people_exposed"); av_life = eape("people_gt1.0m")
+    eape_c = lambda k, cond: EC.aed({rp: float(d[(rp, cond)][k]) for rp in rps})
 
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(13, 5))
-    for ax, k, ttl, av in [(a1, "people_exposed", "People exposed to flooding", av_tot),
-                           (a2, "people_gt1.0m", "People in >1 m water (life-safety)", av_life)]:
+    for ax, k, ttl in [(a1, "people_exposed", "People exposed to flooding"),
+                       (a2, "people_gt1.0m", "People in >1 m water (life-safety)")]:
         b, s = col("baseline", k), col("scheme", k)
-        ax.plot(rps, b, "-o", color="#2b3a55", lw=2, label="Baseline")
-        ax.plot(rps, s, "-o", color="#c0562b", lw=2, label="Scheme")
+        eb, es = eape_c(k, "baseline"), eape_c(k, "scheme"); av = eb - es
+        ax.plot(rps, b, "-o", color="#2b3a55", lw=2, label=f"Baseline  (EAPE {eb:,.0f}/yr)")
+        ax.plot(rps, s, "-o", color="#c0562b", lw=2, label=f"Scheme  (EAPE {es:,.0f}/yr)")
         ax.fill_between(rps, s, b, color="#f0a54a", alpha=.5,
                         label=f"Avoided  (EAPE {av:,.0f}/yr)")
         ax.set_xscale("log"); ax.set_title(ttl); ax.set_xlabel("Return period (yr)")

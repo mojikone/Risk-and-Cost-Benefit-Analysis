@@ -77,12 +77,12 @@ rp,condition,hclass,desc,area_ha,plots,people
 200,scheme,4,H4 unsafe for people,52.55,53,202
 200,scheme,5,H5 unsafe; buildings damaged,87.6,59,305
 200,scheme,6,H6 unsafe; buildings fail,22.34,1,4
-500,baseline,1,H1 generally safe,0.0,0,0
-500,baseline,2,H2 unsafe small vehicles,0.0,0,0
-500,baseline,3,H3 unsafe vehicles/children/elderly,0.0,0,0
-500,baseline,4,H4 unsafe for people,0.0,0,0
-500,baseline,5,H5 unsafe; buildings damaged,0.0,0,0
-500,baseline,6,H6 unsafe; buildings fail,0.0,0,0
+500,baseline,1,H1 generally safe,31.53,98,336
+500,baseline,2,H2 unsafe small vehicles,17.99,50,180
+500,baseline,3,H3 unsafe vehicles/children/elderly,15.35,51,168
+500,baseline,4,H4 unsafe for people,33.97,78,508
+500,baseline,5,H5 unsafe; buildings damaged,338.87,461,3949
+500,baseline,6,H6 unsafe; buildings fail,332.82,267,1490
 500,scheme,1,H1 generally safe,147.26,303,1567
 500,scheme,2,H2 unsafe small vehicles,57.85,144,552
 500,scheme,3,H3 unsafe vehicles/children/elderly,67.28,190,755
